@@ -74,10 +74,9 @@ if __name__ == '__main__':
 
     clipboard = paste2file()
 
-    try:
-        arg_filename = sys.argv[1]
-        clipboard.set_filename(arg_filename)
-    except IndexError:
-        self._prompt_for_filename()
+    if len(sys.argv) > 1:
+        clipboard.set_filename(sys.argv[1])
+    else:
+        clipboard._prompt_for_filename()
 
     clipboard.do()
