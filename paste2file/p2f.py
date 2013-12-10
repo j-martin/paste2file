@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-"""p2f.py: Copies the content of the clipboard to a file.
+"""p2f.py: Small Python utility that copy the clipboard to a file. Can be useful
+when following a tutorial for example. Coded to work on Windows, *nix and OS X.
 """
 
 __author__ = "Jean-Martin Archer"
@@ -34,9 +35,9 @@ class paste2file(object):
     def _prompt_for_filename(self):
 
         try:
-            assert(self._filename != False)
+            self._filename
         except AttributeError:
-            print 'Enter the filename: '
+            sys.stdout.write('Output Path (default: ./clipboard.txt): ')
             self._filename = self._validate_filename(silent=False)
 
     def _validate_filename(self, filename=None, silent=True):
@@ -44,7 +45,9 @@ class paste2file(object):
         if not silent:
             filename = raw_input()
 
-        if re.match("^[a-zA-Z0-9\._/\s]*$", filename):
+        if filename == '':
+            return 'clipboard.txt'
+        elif re.match("^[a-zA-Z0-9\._\s]*$", filename):
             return filename
         else:
 
@@ -55,8 +58,9 @@ class paste2file(object):
                 return False
 
     def _save_to_file(self):
+
         file = open(self._filename, 'w')
-        file.write(self._clipboard)
+        file.write(self._clipboard + '\n')
         file.close()
 
     def do(self):
@@ -64,7 +68,6 @@ class paste2file(object):
         """
 
         self._get_clipboard()
-        self._prompt_for_filename()
         self._save_to_file()
 
 if __name__ == '__main__':
@@ -72,9 +75,9 @@ if __name__ == '__main__':
     clipboard = paste2file()
 
     try:
-        arg_filename = sys.argv[-1]
+        arg_filename = sys.argv[1]
         clipboard.set_filename(arg_filename)
     except IndexError:
-        pass
+        self._prompt_for_filename()
 
     clipboard.do()

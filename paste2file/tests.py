@@ -1,36 +1,50 @@
 #!/usr/bin/env python
 
-"""tests.py: Testing for font2css
+"""tests.py: Testing for paste2file
 """
 
 __author__ = "Jean-Martin Archer"
 __copyright__ = "Copyright 2013, MIT License."
 
-from fromcpb import *
+from p2f import *
 from os import unlink
 from time import clock
 
 
 def test_init():
     test = paste2file()
+    expected = 'paste2file.p2f'
 
-    assert (test.__module__ == 'fromcpb.fromcpb')
+    result = test.__module__
+
+    print result
+    assert (result == expected)
 
 
 def test_validation():
     test = paste2file()
 
-    print(test.set_filename('test.txt'))
-    assert(test.set_filename('test.txt') != False)
+    inputs_list = [
+        {'input': 'test.txt', },
+        {'input': 'test//.txt', 'expected': False},
+        {'input': 'tes-"t.txt.txt', 'expected': False},
+        {'input': 't|e&st.txt', 'expected': False, },
+        {'input': '', 'expected': 'clipboard.txt', },
+    ]
 
-    print(test.set_filename('test//.txt'))
-    assert(test.set_filename('test//.txt') != False)
+    for inputs_dict in inputs_list:
 
-    print(test.set_filename('tes-"t.txt'))
-    assert(test.set_filename('tes-"t.txt') == False)
+        inputs = inputs_dict['input']
+        try:
+            expected = inputs_dict['expected']
+        except KeyError:
+            expected = inputs_dict['input']
 
-    print(test.set_filename('t|e&st.txt'))
-    assert(test.set_filename('t|e&st.txt') == False)
+        print('%s => %s ?' % (inputs, expected))
+        result = test.set_filename(inputs)
+        print(result)
+
+        assert(result == expected)
 
 
 def test_get_clipboard():
@@ -59,7 +73,7 @@ def test_do():
 
     # Check
     result = open(filename).read()
-    assert(expected == result)
 
-    # Cleanup
+    print("%r == %r ?" % (expected, result))
     unlink(filename)
+    assert(expected + '\n' == result)
