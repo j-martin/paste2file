@@ -6,6 +6,6 @@ python:
   - "3.3"
 # command to install dependencies
 install:
-  -  if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install --use-mirrors python26-tk
+  -  "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install --use-mirrors python26-tk"
 # command to run tests
 script: nosetests
